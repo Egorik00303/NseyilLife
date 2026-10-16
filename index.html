@@ -102,14 +102,6 @@
             box-shadow: 0 0 20px #00ff33;
         }
 
-        /* Стиль для сообщения об успешной отправке внутри терминала */
-        #form-status {
-            margin-top: 15px;
-            text-align: center;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
         .footer-welcome {
             position: fixed;
             bottom: 20px;
@@ -154,8 +146,8 @@
         
         <h3>Отправка сообщения, просьбы и тд:</h3>
         
-        <!-- Убрали стандартный переход, теперь всем управляет скрипт id="my-form" -->
-        <form id="my-form" action="https://formspree.io" method="POST">
+        <!-- Прямая, бронебойная HTML отправка -->
+        <form action="https://formspree.io" method="POST">
             <label>От кого (Ник или Почта):</label>
             <input type="text" name="nickname" class="input-box" placeholder="Например: Незнакомец" required>
             
@@ -163,17 +155,13 @@
             <label>Текст сообщения:</label>
             <textarea name="message" class="input-box" rows="4" placeholder="Напишите сообщение Nseyil..." required></textarea>
             
-            <button type="submit" id="submit-btn" class="btn">Отправить на компьютер администратора</button>
-            
-            <!-- Сюда скрипт будет выводить красивый статус -->
-            <div id="form-status"></div>
+            <button type="submit" class="btn">Отправить на компьютер администратора</button>
         </form>
     </div>
 
     <div class="footer-welcome">Сайт был сделан Google AI</div>
 
     <script>
-        // 1. Живые хакерские часы
         function updateClock() {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString('ru-RU');
@@ -181,7 +169,6 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 2. Логика летающих прозрачных зеленых букв (Матрица)
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -220,42 +207,6 @@
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-        });
-
-        // 3. ХАКЕРСКАЯ ОТПРАВКА БЕЗ ПЕРЕЗАГРУЗКИ СТРАНИЦЫ (AJAX)
-        const form = document.getElementById("my-form");
-        const status = document.getElementById("form-status");
-        const btn = document.getElementById("submit-btn");
-
-        form.addEventListener("submit", async function(event) {
-            event.preventDefault(); // Блокируем стандартный багнутый переход браузера
-            btn.disabled = true;
-            status.style.color = "#ffff00";
-            status.innerText = "[SENDING] Подключение к шлюзу передачи данных...";
-
-            const data = new FormData(event.target);
-            
-            try {
-                const response = await fetch(event.target.action, {
-                    method: form.method,
-                    body: data,
-                    headers: { 'Accept': 'application/json' }
-                });
-
-                if (response.ok) {
-                    status.style.color = "#00ff33";
-                    status.innerText = "[SUCCESS] Сообщение успешно доставлено на ПК Nseyil!";
-                    form.reset(); // Очищаем поля формы для нового сообщения
-                } else {
-                    status.style.color = "#ff0055";
-                    status.innerText = "[ERROR] Шлюз отклонил пакет данных.";
-                }
-            } catch (error) {
-                status.style.color = "#ff0055";
-                status.innerText = "[FATAL ERROR] Ошибка сети. Проверьте соединение.";
-            } finally {
-                btn.disabled = false;
-            }
         });
     </script>
 
